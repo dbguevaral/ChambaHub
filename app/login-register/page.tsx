@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, Suspense} from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,10 +10,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Navbar } from "@/components/ui/navbar";
 import { Mail } from "lucide-react"; // Using Lucide for social icons as placeholders
 
-export default function LoginRegister() {
+function LoginRegisterForm() {
     const searchParams = useSearchParams();
-    const router = useRouter();
-    
+    // const router = useRouter();
+
     // Initialize mode based on URL query (?mode=register)
     const initialMode = searchParams.get("mode") === "register" ? "register" : "login";
     const [mode, setMode] = useState<"login" | "register">(initialMode);
@@ -25,10 +25,7 @@ export default function LoginRegister() {
     }
   }, [searchParams]); // This triggers whenever the URL parameters change
 
-    return (
-        <div className="min-h-screen bg-zinc-950 text-white">
-        <Navbar />
-        
+    return (     
         <main className="flex items-center justify-center p-4 min-h-[calc(100vh-65px)]">
             <Card className="w-full max-w-md bg-zinc-900 border-zinc-800 shadow-2xl">
             <CardHeader className="space-y-1 text-center">
@@ -130,6 +127,21 @@ export default function LoginRegister() {
             </CardContent>
             </Card>
         </main>
-    </div>
     );
+}
+
+export default function LoginRegisterPage() {
+    return (
+        <div className="min-h-screen bg-zinc-950 text-white"> 
+            <Navbar />
+            {/* This suspense boundary is to fix Vercel Build Error */}
+            <Suspense fallback={
+                <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
+                    <p className="text-zinc-500 italic">Cargando...</p>
+                </div>
+            }>
+            <LoginRegisterForm/>
+            </Suspense>
+        </div>
+    )
 }
