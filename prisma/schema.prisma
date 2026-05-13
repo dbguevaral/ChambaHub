@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  PROFESSIONAL
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?   // Optional if using Google/FB login
+  image         String?
+  role          UserRole  @default(CLIENT)
+  createdAt     DateTime  @default(now())
+  
+  // Relations
+  professional  ProfessionalProfile?
+  bookings      Booking[] @relation("ClientBookings")
+}
+
+model ProfessionalProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  
+  category      String   // e.g., "Plomero", "Electricista"
+  bio           String?
+  priceRange    Int      @default(1) // 1: $, 2: $$, 3: $$$
+  rating        Float    @default(0.0)
+  location      String   // For filtering by district
+  
+  // Availability & Work
+  bookings      Booking[] @relation("ProfessionalBookings")
+  reviews       Review[]
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  scheduledDate   DateTime
+  status          String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED
+  
+  clientId        String
+  client          User     @relation("ClientBookings", fields: [clientId], references: [id])
+  
+  professionalId  String
+  professional    ProfessionalProfile @relation("ProfessionalBookings", fields: [professionalId], references: [id])
+  
+  createdAt       DateTime @default(now())
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  rating         Int      // 1 to 5
+  comment        String?
+  
+  professionalId String
+  professional   ProfessionalProfile @relation(fields: [professionalId], references: [id])
+}

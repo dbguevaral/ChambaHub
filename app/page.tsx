@@ -90,11 +90,11 @@ export default function Home() {
       {/* Hero Section */}
       <section className="flex flex-col min-h-[calc(100vh-65px)] items-center justify-center px-4 py-12">
         <div className="max-w-3xl mx-auto text-center pb-4">
-          <h1 className="mb-6 text-5xl md:text-7xl font-bold tracking-tighter">
+          <h1 className="mb-6 text-4xl md:text-7xl font-bold tracking-tighter">
             Encuentra el profesional perfecto
             <span className="text-emerald-400"> para tu chamba</span>
           </h1>
-          <p className="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-xl md:text-4xl text-zinc-400 max-w-2xl mx-auto">
             Conecta con plomeros, electricistas, pintores y más. Elige fecha y ubicación. Reserva de forma rápida y segura.
           </p>
         </div>
